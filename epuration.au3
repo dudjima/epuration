@@ -22,34 +22,51 @@ Dans un premier temps on vérifie le chemin du dosser Pyx à épurer, on peut le
 => On parcours chaque dossier et on déplace le fichier si nécessaire
 
 #ce
-
-; DOSSIER PAR DEFAUT DE L'EPURATION
-$chemin_pyx 	= "c:\pyxvital"
-
+#Region Definition des constantes
+; ON INIALISE LES LOGS
 $chemin_logs 	= "c:\trilog\logs\epuration_log.log"
-local $liste_dossiers[3] = [2,"FSE","LOTS"]
+Local $liste_dossiers[3] = [2, "FSE", "LOTS"]
+#EndRegion
 
-_FileWriteLog($chemin_logs,"Début de la moulinette")
+
 $dossier_existe = FileExists('c:\trilog\logs')
 if $dossier_existe = 0 Then
 	DirCreate('c:\trilog\logs')
-	_FileWriteLog($chemin_logs,"Création du dossier de logs")
-Else
-	_FileWriteLog($chemin_logs,"Dossier logs existant")
+	_FileWriteLog($chemin_logs, "Création du dossier de logs")
 EndIf
+
+_FileWriteLog($chemin_logs, "Début de la moulinette")
+
+; On récupere la configuration de pyxvital.ini
+$ini_pyxvital = IniReadSection("c:\pyxvital\pyxvital.ini","Répertoires")
+if @error Then
+	_FileWriteLog($chemin_logs, "pyxvital.ini non trouve")
+	MsgBox(0,"Erreur = 0", "Le programme ne trouve pas de pyxvital installé sur le poste")
+Else
+	_FileWriteLog($chemin_logs, "Valeur témoin de pyxvital.ini = " & $ini_pyxvital[4][1] )
+EndIf
+
+; On vérifie si on est sur une installation client-serveur ou non
+if $ini_pyxvital[4][1] = "c:\pyxvital\FSE\#" Then ; on est sur une installation monoposte
+	$chemin_pyx 	= "c:\pyxvital"
+	_FileWriteLog($chemin_logs, "Type d'installation : Monoposte")
+ElseIf $ini_pyxvital[4][1] = "C:\Vzlan" Then ; on est sur un poste serveur
+	_FileWriteLog($chemin_logs, "Type d'installation : Serveur")
+	$chemin_pyx 	= "c:\VZLan"
+else
+	MsgBox(0,"Erreur = 1", "Vous êtes sur un poste client, merci d'utiliser le programme sur le serveur directement. ")
+EndIf
+
 
 ; ON TEST SI IL Y A UN ARGUMENT DÉCLARÉ
 $aCmdLine = _WinAPI_CommandLineToArgv($CmdLineRaw)
 if $aCmdLine[1] = "/ErrorStdOut" Then
 	_FileWriteLog($chemin_logs, "aucun argument trouvé" )
 Else
-	$chemin_fse = $aCmdLine[1]
+	$chemin_pyx = $aCmdLine[1]
 	_FileWriteLog($chemin_logs, "un argument trouvé : " & $aCmdLine[1]& " -----")
 
 EndIf
-
-; ON INIALISE LES LOGS
-
 
 #Region Parcours dossiers
 ; ON PARCOURS LES DOSSIERS
