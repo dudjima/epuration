@@ -23,6 +23,7 @@ Dans un premier temps on vérifie le chemin du dosser Pyx à épurer, on peut le
 => On parcours chaque dossier et on déplace le fichier si nécessaire
 
 #ce
+
 #Region Definition des constantes
 $chemin_logs 	= $dossier_logs & "\epuration_log.log"
 Local $liste_dossiers[3] = [2, "FSE", "LOTS"]
@@ -70,7 +71,7 @@ For $h = 1 To UBound($liste_dossiers)-1
 	$recap = "" ; ON INITIALISE LA VARIABLE RÉCAPITULANT LES TRANSFERTS
 	_FileWriteLog($chemin_logs,"Parcours des situations du dossier " & $dossier)
 
-	For $i = 1 To ubound($liste_situations)-1  ; ON COMMENCE À 1 CAR LA ZONE 0 CONTIENT LA TAILLE DU TABLEAU ET DU COUP ON FAIT 1 POUR NE PAS SORTIR DU TABLEAU
+	For $i = 1 To ubound($liste_situations) - 1  ; ON COMMENCE À 1 CAR LA ZONE 0 CONTIENT LA TAILLE DU TABLEAU ET DU COUP ON FAIT 1 POUR NE PAS SORTIR DU TABLEAU
 		; ON CREE LE CHEMIN DES FICHIERS
 		$chemin_situation = $chemin_dossier & "\" & $liste_situations[$i]
 		_FileWriteLog($chemin_logs,"situation lue : " & $chemin_situation)
